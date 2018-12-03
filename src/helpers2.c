@@ -543,7 +543,6 @@ void fapint_parse_comment_telemetry(fap_packet_t* packet, char** rest, unsigned 
 	int tmp;
 	char* tmp_str;
 	unsigned int tmp_us;
-	char buf[100];
 	
 	unsigned int const matchcount = 8;
 	regmatch_t matches[matchcount];

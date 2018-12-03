@@ -758,7 +758,7 @@ time_t fapint_parse_timestamp(char const* input)
 	char buf_3b[3];
 	unsigned int first, second, third;
 	char type;
-	struct tm now_struct, fwd_struct, back_struct, tmp_struct;
+	struct tm now_struct, tmp_struct;
 	time_t thismonth, nextmonth, prevmonth, result;
 	const time_t now = time(NULL);
 	
