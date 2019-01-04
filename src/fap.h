@@ -499,7 +499,7 @@ void fap_free(fap_packet_t* packet);
  * This must be called once and before anything else when starting to use
  * libfap in your program.
 */
-void fap_init();
+void fap_init(void);
 
 
 
@@ -508,7 +508,7 @@ void fap_init();
  * This must be called once when closing your app. Make sure that no fap
  * calls are issued after this.
 */
-void fap_cleanup();
+void fap_cleanup(void);
 
 
 #ifdef __cplusplus
