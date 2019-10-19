@@ -141,8 +141,8 @@ short fapint_initialized = 0;
 fap_packet_t* fap_parseaprs(char const* input, size_t const input_len, short const is_ax25)
 {
 	fap_packet_t* result;
-	int i, pos;
-	unsigned int splitpos, body_len;
+	size_t i, pos;
+	size_t splitpos, body_len;
 	char* body;
 	char* tmp;
 	char poschar, typechar;
@@ -1255,11 +1255,11 @@ int fap_ax25_to_tnc2(char const* ax25frame, size_t ax25frame_len,
 
 
 
-int fap_tnc2_to_kiss(char const* tnc2frame, unsigned int tnc2frame_len, unsigned int const tnc_id,
-                     char* kissframe, unsigned int* kissframe_len)
+int fap_tnc2_to_kiss(char const* tnc2frame, size_t tnc2frame_len, unsigned int const tnc_id,
+                     char* kissframe, size_t* kissframe_len)
 {
 	char ax25frame[2*FRAME_MAXLEN];
-	unsigned int ax25frame_len;
+	size_t ax25frame_len;
 	int i;
 
 	/* Initialize slot for starting FEND and tnc id by skipping two first bytes of our conversion buffer. */

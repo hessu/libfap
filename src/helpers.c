@@ -49,7 +49,8 @@
 
 int fapint_parse_header(fap_packet_t* packet, short const is_ax25)
 {
-	int i, len, startpos, retval = 1;
+	size_t i, len, startpos;
+	int retval = 1;
 	char* rest = NULL;
 	char* tmp = NULL;
 	char buf_10b[10];
@@ -308,10 +309,10 @@ int fapint_parse_header(fap_packet_t* packet, short const is_ax25)
 
 
 
-int fapint_parse_mice(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_mice(fap_packet_t* packet, char const* input, size_t const input_len)
 {
-	int len, error, i, lon;
-	unsigned int tmp_us;
+	size_t len, error, i, tmp_us;
+	int lon;
 	char *rest, *tmp_str;
 	char dstcall[7], latitude[7], buf_6b[6], longitude[6];
 	double speed, course_speed, course_speed_tmp, course;
@@ -432,7 +433,7 @@ int fapint_parse_mice(fap_packet_t* packet, char const* input, unsigned int cons
 		if ( packet->error_code ) *packet->error_code = fapMICE_AMB_LARGE;
 		return 0;
 	}
-	*packet->pos_ambiguity = matches[2].rm_eo - matches[2].rm_so;
+	*packet->pos_ambiguity = (unsigned int)(matches[2].rm_eo - matches[2].rm_so);
 	
 	/* Validate ambiguity. */
 	if ( *packet->pos_ambiguity > 4 )
@@ -1165,7 +1166,7 @@ int fapint_parse_normal(fap_packet_t* packet, char const* input)
 		if ( packet->error_code ) *packet->error_code = fapLOC_AMB_INV;
 		return 0;
 	}
-	*packet->pos_ambiguity = matches[2].rm_eo - matches[2].rm_so;
+	*packet->pos_ambiguity = (unsigned int)(matches[2].rm_eo - matches[2].rm_so);
 	
 	/* Continue depending on amount of position ambiguity. */
 	packet->latitude = malloc(sizeof(double));
@@ -1233,12 +1234,12 @@ int fapint_parse_normal(fap_packet_t* packet, char const* input)
 
 
 
-void fapint_parse_comment(fap_packet_t* packet, char const* input, unsigned int const input_len)
+void fapint_parse_comment(fap_packet_t* packet, char const* input, size_t const input_len)
 {
 	char course[4], speed[4], range[5], altitude[7], dao[3];
-	int i, tmp_s;
+	size_t i, tmp_s;
 	char* tmp_str, *rest = NULL;
-	unsigned int rest_len = 0, tmp_us;
+	size_t rest_len = 0, tmp_us;
 
 	unsigned int const matchcount = 2;
 	regmatch_t matches[matchcount];
@@ -1265,7 +1266,7 @@ void fapint_parse_comment(fap_packet_t* packet, char const* input, unsigned int 
 					if ( tmp_s >= 1 && tmp_s <= 360 )
 					{
 						/* It's valid, let's save it. */
-						*packet->course = tmp_s;
+						*packet->course = (unsigned int)tmp_s;
 					}
 				}
 			}
@@ -1409,11 +1410,12 @@ void fapint_parse_comment(fap_packet_t* packet, char const* input, unsigned int 
 
 
 
-int fapint_parse_nmea(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_nmea(fap_packet_t* packet, char const* input, size_t const input_len)
 {
 	char* rest;
-	unsigned int rest_len;
-	int i, len, retval = 1;
+	size_t rest_len;
+	size_t i, len;
+	int retval = 1;
 
 	char* checksum_area;
 	char checksum_given_str[3];
@@ -1998,11 +2000,12 @@ int fapint_parse_nmea(fap_packet_t* packet, char const* input, unsigned int cons
 
 
 
-int fapint_parse_object(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_object(fap_packet_t* packet, char const* input, size_t const input_len)
 {
 	int i;
 
 	/* Validate object length. At least 31 non-null chars are needed. */
+	// TODO: should check input_len too
 	if ( strlen(input) < 31 )
 	{
 		packet->error_code = malloc(sizeof(fap_error_code_t));
@@ -2100,9 +2103,9 @@ int fapint_parse_object(fap_packet_t* packet, char const* input, unsigned int co
 }
 
 
-int fapint_parse_item(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_item(fap_packet_t* packet, char const* input, size_t const input_len)
 {
-	int len, i;
+	size_t len, i;
 
 	/* Check length. */
 	if ( input_len < 18 )
@@ -2198,9 +2201,9 @@ int fapint_parse_item(fap_packet_t* packet, char const* input, unsigned int cons
 }
 
 
-int fapint_parse_message(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_message(fap_packet_t* packet, char const* input, size_t const input_len)
 {
-	int i, len;
+	size_t i, len;
 	char* tmp;
 	short skipping_spaces = 1;
 					
@@ -2370,7 +2373,7 @@ int fapint_parse_message(fap_packet_t* packet, char const* input, unsigned int c
 	return 1;
 }
 
-int fapint_parse_capabilities(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_capabilities(fap_packet_t* packet, char const* input, size_t const input_len)
 {
 	fapint_llist_item_t* caps = NULL;
 	int cap_count = 0;
@@ -2378,7 +2381,8 @@ int fapint_parse_capabilities(fap_packet_t* packet, char const* input, unsigned 
 
 	char* tmp_str, *sepa;
 	int cap_len, cap_startpos, i, retval = 1;
-	unsigned int foo, saved, sepa_pos;
+	size_t foo, saved;
+	size_t sepa_pos;
 
 	/* Find capabilities. */
 	cap_startpos = 0;
@@ -2510,7 +2514,7 @@ int fapint_parse_capabilities(fap_packet_t* packet, char const* input, unsigned 
 
 
 
-int fapint_parse_status(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_status(fap_packet_t* packet, char const* input, size_t const input_len)
 {
 	short has_timestamp = 0;
 	int i;
@@ -2560,13 +2564,14 @@ int fapint_parse_status(fap_packet_t* packet, char const* input, unsigned int co
 
 
 
-int fapint_parse_wx(fap_packet_t* packet, char const* input, unsigned int const input_len)
+int fapint_parse_wx(fap_packet_t* packet, char const* input, size_t const input_len)
 {
 	char wind_dir[4], wind_speed[4], *wind_gust = NULL, *temp = NULL;
 	char buf_5b[6];
-	int len, retval = 1;
+	size_t len;
+	int retval = 1;
 	char* rest = NULL, *tmp_str;
-	unsigned int rest_len, tmp_us;
+	size_t rest_len, tmp_us;
 	
 	unsigned int const matchcount = 5;
 	regmatch_t matches[matchcount];
@@ -2860,7 +2865,7 @@ int fapint_parse_wx(fap_packet_t* packet, char const* input, unsigned int const 
 		  		return 0;
 		  	}
 		  	if ( tmp_us == 0 ) tmp_us = 100;
-		  	*packet->wx_report->humidity = tmp_us;
+		  	*packet->wx_report->humidity = (unsigned int)tmp_us;
 		}
 		
 		tmp_str = fapint_remove_part(rest, rest_len, matches[1].rm_so-1, matches[1].rm_eo, &tmp_us);

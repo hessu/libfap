@@ -118,7 +118,7 @@ int fapint_get_nmea_latlon(fap_packet_t* packet, char* field1, char* field2);
  * \param rest Comment text.
  * \param rest_len Lenght of rest in bytes.
 */
-void fapint_parse_comment_telemetry(fap_packet_t* packet, char** rest, unsigned int* rest_len);
+void fapint_parse_comment_telemetry(fap_packet_t* packet, char** rest, size_t* rest_len);
 
 
 /// Set all fields of given wx report to NULL.
@@ -129,9 +129,9 @@ void fapint_init_wx_report(fap_wx_report_t* wx_report);
 void fapint_init_telemetry_report(fap_telemetry_t* tlm_report);
 
 /// Returns copy of given input with specified part removed.
-char* fapint_remove_part(char const* input, unsigned int const input_len,
-                         unsigned int const part_so, unsigned int const part_eo,
-                         unsigned int* result_len);
+char* fapint_remove_part(char const* input, size_t const input_len,
+                         size_t const part_so, size_t const part_eo,
+                         size_t* result_len);
 
 
 #endif // HELPERS2_H

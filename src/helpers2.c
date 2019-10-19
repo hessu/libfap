@@ -538,11 +538,11 @@ short fapint_valid_com_telem_char(char c)
 }
 
 
-void fapint_parse_comment_telemetry(fap_packet_t* packet, char** rest, unsigned int* rest_len)
+void fapint_parse_comment_telemetry(fap_packet_t* packet, char** rest, size_t* rest_len)
 {
 	int tmp;
 	char* tmp_str;
-	unsigned int tmp_us;
+	size_t tmp_us;
 	
 	unsigned int const matchcount = 8;
 	regmatch_t matches[matchcount];
@@ -646,11 +646,11 @@ void fapint_init_telemetry_report(fap_telemetry_t* tlm_report)
 
 
 
-char* fapint_remove_part(char const* input, unsigned int const input_len,
-                         unsigned int const part_so, unsigned int const part_eo,
-                         unsigned int* result_len)
+char* fapint_remove_part(char const* input, size_t const input_len,
+                         size_t const part_so, size_t const part_eo,
+                         size_t* result_len)
 {
-	unsigned int i, part_i;
+	size_t i, part_i;
 	char* result;
 
 

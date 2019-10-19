@@ -50,7 +50,7 @@ int fapint_parse_header(fap_packet_t* packet, short const is_ax25);
  * Everything after the mic-e report is also parsed here.
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_mice(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_mice(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Returns unixtime based on timestamp in given body.
@@ -80,56 +80,56 @@ int fapint_parse_normal(fap_packet_t* packet, char const* input);
 /**
  * Looks for optional fields and can't thus fail.
 */
-void fapint_parse_comment(fap_packet_t* packet, char const* input, unsigned int const input_len);
+void fapint_parse_comment(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Parse NMEA packet.
 /**
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_nmea(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_nmea(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Try to parse given packet body as object.
 /**
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_object(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_object(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Try to parse given packet body as item.
 /**
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_item(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_item(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Try to parse given packet body as message.
 /**
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_message(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_message(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Parse capabilities message.
 /**
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_capabilities(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_capabilities(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Parse status message.
 /**
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_status(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_status(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Parse wx report.
 /**
  * \return 1 on success, 0 on failure.
 */
-int fapint_parse_wx(fap_packet_t* packet, char const* input, unsigned int const input_len);
+int fapint_parse_wx(fap_packet_t* packet, char const* input, size_t const input_len);
 
 
 /// Parse telemetry message.

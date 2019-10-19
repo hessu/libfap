@@ -463,8 +463,8 @@ int fap_kiss_to_tnc2(char const* kissframe, size_t kissframe_len,
  * \param kissframe_len Amount of bytes stored into kissframe during successfull conversion.
  * \return 1 in case of success, 0 when error occured.
 */
-int fap_tnc2_to_kiss(char const* tnc2frame, unsigned int tnc2frame_len, unsigned int const tnc_id,
-                     char* kissframe, unsigned int* kissframe_len);
+int fap_tnc2_to_kiss(char const* tnc2frame, size_t tnc2frame_len, unsigned int const tnc_id,
+                     char* kissframe, size_t* kissframe_len);
 
 
 
