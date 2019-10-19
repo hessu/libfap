@@ -717,10 +717,10 @@ int fapint_parse_mice(fap_packet_t* packet, char const* input, size_t const inpu
 	/* Check for base-91 comment telemetry. */
 	fapint_parse_comment_telemetry(packet, &rest, &len);
 	
-	/* If we still hafe stuff left, check for !DAO!, take the last occurrence (per recommendation). */
-	if ( len > 0 )
+	/* If we still have stuff left, check for !DAO!, take the last occurrence (per recommendation). */
+	if ( len >= 5 )
 	{
-		for ( i = len-1; i >= 0 ; --i )
+		for ( i = len-5; i >= 0 && i < len; --i )
 		{
 			if ( i + 4 < len && rest[i] == '!' &&
 				  0x21 <= rest[i+1] && rest[i+1] <= 0x7b &&
@@ -1374,10 +1374,10 @@ void fapint_parse_comment(fap_packet_t* packet, char const* input, size_t const 
 	/* Check for base-91 comment telemetry. */
 	fapint_parse_comment_telemetry(packet, &rest, &rest_len);
 	
-	/* If we still hafe stuff left, check for !DAO!, take the last occurrence (per recommendation). */
-	if ( rest_len > 0 )
+	/* If we still have stuff left, check for !DAO!, take the last occurrence (per recommendation). */
+	if ( rest_len >= 5 )
 	{
-		for ( i = rest_len-1; i >= 0 ; --i )
+		for ( i = rest_len-5; i >= 0 && i < rest_len; --i )
 		{
 			if ( i + 4 < rest_len && rest[i] == '!' &&
 				  0x21 <= rest[i+1] && rest[i+1] <= 0x7b &&
