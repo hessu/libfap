@@ -40,7 +40,7 @@
 int main()
 {
 	char* input;
-	unsigned int input_len;
+	size_t input_len;
 	fap_packet_t* packet;
 
 	fap_init();
@@ -138,7 +138,7 @@ short fapint_initialized = 0;
 
 
 
-fap_packet_t* fap_parseaprs(char const* input, unsigned int const input_len, short const is_ax25)
+fap_packet_t* fap_parseaprs(char const* input, size_t const input_len, short const is_ax25)
 {
 	fap_packet_t* result;
 	int i, pos;
@@ -817,7 +817,8 @@ double fap_direction(double lon0, double lat0, double lon1, double lat1)
 
 int fap_count_digihops(fap_packet_t const* packet)
 {
-	int i, len;
+    int i;
+    size_t len;
 	unsigned int hopcount = 0, n, N;
 	short wasdigied;
 	char* element;
@@ -901,7 +902,8 @@ char* fap_check_ax25_call(char const* input, short const add_ssid0)
 	unsigned int const matchcount = 3;
 	regmatch_t matches[matchcount];
 
-	int ssid = 0, len;
+    int ssid = 0;
+    size_t len;
 	char call[7], ssid_str[4];
 	
 	char* result = NULL;
@@ -966,14 +968,14 @@ char* fap_check_ax25_call(char const* input, short const add_ssid0)
 
 
 
-int fap_kiss_to_tnc2(char const* kissframe, unsigned int kissframe_len,
-                     char* tnc2frame, unsigned int* tnc2frame_len, unsigned int* tnc_id)
+int fap_kiss_to_tnc2(char const* kissframe, size_t kissframe_len,
+                     char* tnc2frame, size_t* tnc2frame_len, unsigned int* tnc_id)
 {
 	char input[FRAME_MAXLEN];
-	unsigned int input_len = 0;
+	size_t input_len = 0;
 	
 	char output[2*FRAME_MAXLEN];
-	unsigned int output_len = 0;
+	size_t output_len = 0;
 	
 	int i = 0, j = 0, escape_mode = 0;
 
@@ -1051,7 +1053,7 @@ int fap_kiss_to_tnc2(char const* kissframe, unsigned int kissframe_len,
 	/* Length checking _after_ byte unstuffing. */
 	if ( input_len < 16 )
 	{
-		sprintf(output, "Too short KISS frame (%d bytes after unstuffing).", input_len);
+		sprintf(output, "Too short KISS frame (%ld bytes after unstuffing).", input_len);
 		output_len = strlen(output)+1;
 		if ( output_len > *tnc2frame_len ) output_len = *tnc2frame_len;
 		memcpy(tnc2frame, output, output_len);
@@ -1065,8 +1067,8 @@ int fap_kiss_to_tnc2(char const* kissframe, unsigned int kissframe_len,
 
 
 
-int fap_ax25_to_tnc2(char const* ax25frame, unsigned int ax25frame_len,
-                     char* tnc2frame, unsigned int* tnc2frame_len)
+int fap_ax25_to_tnc2(char const* ax25frame, size_t ax25frame_len,
+                     char* tnc2frame, size_t* tnc2frame_len)
 {
 	int i, j, retval = 1;
 	char *checked_call, *dst_callsign = NULL;
@@ -1075,7 +1077,7 @@ int fap_ax25_to_tnc2(char const* ax25frame, unsigned int ax25frame_len,
 	char charri;
 
 	char output[2*FRAME_MAXLEN];
-	unsigned int output_len = 0;
+	size_t output_len = 0;
 	
 	/* Check that we got params. */
 	if ( !ax25frame || !ax25frame_len || !tnc2frame || !tnc2frame_len )
@@ -1095,7 +1097,7 @@ int fap_ax25_to_tnc2(char const* ax25frame, unsigned int ax25frame_len,
 	}
 	if ( ax25frame_len < 16 )
 	{
-		sprintf(output, "Too short AX.25 frame (%d bytes).", ax25frame_len);
+		sprintf(output, "Too short AX.25 frame (%ld bytes).", ax25frame_len);
 		output_len = strlen(output)+1;
 		if ( output_len > *tnc2frame_len ) output_len = *tnc2frame_len;
 		memcpy(tnc2frame, output, output_len);
@@ -1315,16 +1317,17 @@ int fap_tnc2_to_kiss(char const* tnc2frame, unsigned int tnc2frame_len, unsigned
 
 
 
-int fap_tnc2_to_ax25(char const* tnc2frame, unsigned int tnc2frame_len,
-                     char* ax25frame, unsigned int* ax25frame_len)
+int fap_tnc2_to_ax25(char const* tnc2frame, size_t tnc2frame_len,
+                     char* ax25frame, size_t* ax25frame_len)
 {
 	char input[FRAME_MAXLEN];
 	
 	char output[2*FRAME_MAXLEN];
-	unsigned int output_len = 0;
+	size_t output_len = 0;
 
 	char *header = NULL, *digipeaters = NULL, *body = NULL;
-	unsigned int digi_count, body_len;
+    unsigned int digi_count;
+    size_t body_len;
 
 	char sender[6], sender_ssid[4], receiver[6], receiver_ssid[4];
 	int sender_ssid_num = 0, receiver_ssid_num = 0;
@@ -1332,7 +1335,8 @@ int fap_tnc2_to_ax25(char const* tnc2frame, unsigned int tnc2frame_len,
 	char digicall[6], digicall_ssid[4], hbit;
 	int digicall_ssid_num = 0;
 
-	int retval = 1, len, i;
+	int retval = 1, i;
+    size_t len;
 	char* tmp_str;
 	
 	unsigned int const matchcount = 6;
@@ -1482,13 +1486,13 @@ int fap_tnc2_to_ax25(char const* tnc2frame, unsigned int tnc2frame_len,
 				if ( regexec(&fapint_regex_kiss_digi, tmp_str, matchcount, (regmatch_t*)&matches, 0) == 0 )
 				{
 					/* digi's plain callsign */
-					len = matches[1].rm_eo - matches[1].rm_so;
+					len = (int)(matches[1].rm_eo - matches[1].rm_so);
 					memset(digicall, ' ', 6);
 					memcpy(digicall, tmp_str+matches[1].rm_so, len);
 					
 					/* ssid */
 					digicall_ssid_num = 0;
-					len = matches[2].rm_eo - matches[2].rm_so;
+					len = (int)(matches[2].rm_eo - matches[2].rm_so);
 					if ( len )
 					{
 						memset(digicall_ssid, 0, 4);

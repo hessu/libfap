@@ -61,7 +61,7 @@ void fapint_clear_llist(fapint_llist_item_t* list)
 
 
 
-double fapint_get_pos_resolution(int const minute_digit_count)
+double fapint_get_pos_resolution(size_t const minute_digit_count)
 {
 	double retval = KNOT_TO_KMH;
 	if ( minute_digit_count  <= -2 )
@@ -79,7 +79,7 @@ double fapint_get_pos_resolution(int const minute_digit_count)
 
 int fapint_parse_symbol_from_dst_callsign(fap_packet_t* packet)
 {
-	int len;
+	size_t len;
 	char leftover_str[3];
 	char type;
 
@@ -424,7 +424,7 @@ int fapint_get_nmea_latlon(fap_packet_t* packet, char* field1, char* field2)
 
 	char* tmp_str;
 	unsigned int tmp_us;
-	int len;
+	size_t len;
 	
 	unsigned int matchcount = 4;
 	regmatch_t matches[matchcount];

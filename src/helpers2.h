@@ -75,7 +75,7 @@ void fapint_clear_llist(fapint_llist_item_t* list);
  *  case (resolution in longitude gets better as you get closer to the
  *  poles).
 */
-double fapint_get_pos_resolution(int const minute_digit_count);
+double fapint_get_pos_resolution(size_t const minute_digit_count);
 
 
 /// Parse station symbol from GPSxyz or SPCxyz -formatted destination callsign.

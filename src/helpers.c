@@ -2990,7 +2990,7 @@ int fapint_parse_telemetry(fap_packet_t* packet, char const* input)
 	regmatch_t matches[matchcount];
 	
 	char* tmp_str;
-	int len1, len2;
+	size_t len1, len2;
 	
 	/* Check params. */
 	if ( !packet || !input )
@@ -3740,9 +3740,8 @@ char* fapint_check_kiss_callsign(char* input)
 	unsigned int matchcount = 3;
 	regmatch_t matches[matchcount];
 	
-	int len;
+	size_t len;
 	char* tmp_str;
-	
 	
 	if ( !input ) return NULL;
 	

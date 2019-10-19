@@ -247,14 +247,14 @@ typedef struct
 	/// Exact copy of the original packet, if such thing was given.
 	char* orig_packet;
 	/// Length of orig_packet.
-	unsigned int orig_packet_len;
+	size_t orig_packet_len;
 	
 	/// Header part of the packet.
 	char* header;
 	/// Body of the packet. No null termination.
 	char* body;
 	/// Lenght of body.
-	unsigned int body_len;
+	size_t body_len;
 	/// AX.25-level source callsign.
 	char* src_callsign;
 	/// AX.25-level destination callsign.
@@ -310,7 +310,7 @@ typedef struct
 	*/
 	char* comment;
 	/// Length of comment.
-	unsigned int comment_len;
+	size_t comment_len;
 
 	/// Name of object or item in packet.
 	char* object_or_item_name;
@@ -341,7 +341,7 @@ typedef struct
 	/// Status message. No 0-termination.
 	char* status;
 	/// Amount of bytes in status message.
-	unsigned int status_len;
+	size_t status_len;
 	/// Capabilities list. Indexes 0, 2, 4, ... store keys and 1, 3, 5, ... the values (or NULL if the key has no value).
 	char** capabilities;
 	/// Amount of capabilities in list.
@@ -372,7 +372,7 @@ typedef struct
  * error_code to check how it did. If library is not initialized, returns
  * NULL.
 */
-fap_packet_t* fap_parseaprs(char const* input, unsigned int const input_len, short const is_ax25);
+fap_packet_t* fap_parseaprs(char const* input, size_t const input_len, short const is_ax25);
 
 
 /// Return human-readable error message for given error code.
@@ -447,8 +447,8 @@ char* fap_check_ax25_call(char const* input, short const add_ssid0);
  * \param tnc_id TNC ID from the kissframe, usually zero.
  * \return 1 in case of success, 0 when error occured.
 */
-int fap_kiss_to_tnc2(char const* kissframe, unsigned int kissframe_len,
-                     char* tnc2frame, unsigned int* tnc2frame_len, unsigned int* tnc_id);
+int fap_kiss_to_tnc2(char const* kissframe, size_t kissframe_len,
+                     char* tnc2frame, size_t* tnc2frame_len, unsigned int* tnc_id);
 
 
 /// Convert a TNC-2 compatible UI-frame into a KISS data frame.
@@ -474,15 +474,15 @@ int fap_tnc2_to_kiss(char const* tnc2frame, unsigned int tnc2frame_len, unsigned
 /**
  * Params and return value work just like similar ones in fap_kiss_to_tnc2().
 */
-int fap_ax25_to_tnc2(char const* ax25frame, unsigned int ax25frame_len,
-                     char* tnc2frame, unsigned int* tnc2frame_len);
+int fap_ax25_to_tnc2(char const* ax25frame, size_t ax25frame_len,
+                     char* tnc2frame, size_t* tnc2frame_len);
 
 /// Convert TNC-2 compatible UI-frame into raw AX.25-frame.
 /**
  * Params and return value work just like similar ones in fap_tnc2_to_kiss().
 */
-int fap_tnc2_to_ax25(char const* tnc2frame, unsigned int tnc2frame_len,
-                     char* ax25frame, unsigned int* ax25frame_len);
+int fap_tnc2_to_ax25(char const* tnc2frame, size_t tnc2frame_len,
+                     char* ax25frame, size_t* ax25frame_len);
 
 
 /// Custom free() for fap_packet_t*.

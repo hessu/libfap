@@ -178,7 +178,7 @@ char* fapint_check_kiss_callsign(char* input);
 
 
 /// Creates and initializes an empty packet.
-fap_packet_t* fapint_create_packet();
+fap_packet_t* fapint_create_packet(void);
 
 
 
