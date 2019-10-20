@@ -2283,6 +2283,9 @@ int fapint_parse_message(fap_packet_t* packet, char const* input, size_t const i
 		if ( !packet->message_ack ) return 0;
 		memcpy(packet->message_ack, packet->message+matches[1].rm_so, len);
 		packet->message_ack[len] = 0;
+		free(packet->message);
+		packet->message = NULL;
+		return 1;
 	}
 
 	/* Check if message is a nack, save id if it is. */
@@ -2293,6 +2296,9 @@ int fapint_parse_message(fap_packet_t* packet, char const* input, size_t const i
 		if ( !packet->message_nack ) return 0;
 		memcpy(packet->message_nack, packet->message+matches[1].rm_so, len);
 		packet->message_nack[len] = 0;
+		free(packet->message);
+		packet->message = NULL;
+		return 1;
 	}
 	
 	/* Separate message-id from the body, if present. */
