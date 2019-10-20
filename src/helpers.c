@@ -2297,61 +2297,64 @@ int fapint_parse_message(fap_packet_t* packet, char const* input, size_t const i
 	
 	/* Separate message-id from the body, if present. */
 	len = 0;
-	for ( i = strlen(packet->message)-1; i >= 0 ; i-- )
-	{
-	        if ( skipping_spaces && !isspace(packet->message[i]) )
-	        {
-	                /* Last non-space char of the id. */
-	                skipping_spaces = 0;
-	        }
-	        else if ( skipping_spaces )
-	        {
-	                continue;
-                }
-                
-                /* New char of id. First check that it can be part of id. */
-                if ( !(isalnum(packet->message[i]) || packet->message[i] == '{') )
-                {
-                        break;
-                }
-                
-                /* Check that we're not too long yet. */
-                len++;
-                if ( len > 6 )
-                {
-                        break;
-                }
-                
-                /* Check if id starts here. */
-                if ( packet->message[i] == '{' )
-                {
-        		/* Create copy of message without the id. */
-	        	tmp = packet->message;
-        		packet->message = malloc(i+1);
-        		if ( !packet->message )
-        		{
-        			free(tmp);
-        			return 0;
-        		}
-        		memcpy(packet->message, tmp, i);
-        		packet->message[i] = 0;
+	i = strlen(packet->message)-1;
+	do {
+		if ( skipping_spaces && !isspace(packet->message[i]) )
+		{
+			/* Last non-space char of the id. */
+			skipping_spaces = 0;
+		}
+		else if ( skipping_spaces )
+		{
+			i--;
+			continue;
+		}
 		
-        		/* Save message id. */
-        		packet->message_id = malloc(len+1);
-	        	if ( !packet->message_id )
-	        	{
-        			free(tmp);
-	        		return 0;
-        		}
-	        	memcpy(packet->message_id, tmp+i+1, len);
-	        	packet->message_id[len] = 0;
-	        	
-	        	/* Get rid of the old message. */
-        		free(tmp);
+		/* New char of id. First check that it can be part of id. */
+		if ( !(isalnum(packet->message[i]) || packet->message[i] == '{') )
+		{
+			break;
+		}
+				
+		/* Check if id starts here. */
+		if ( packet->message[i] == '{' )
+		{
+			/* Create copy of message without the id. */
+			tmp = packet->message;
+			packet->message = malloc(i+1);
+			
+			if ( !packet->message ) {
+				free(tmp);
+				return 0;
+			}
+			
+			memcpy(packet->message, tmp, i);
+			packet->message[i] = 0;
+			
+			/* Save message id. */
+			packet->message_id = malloc(len+1);
+			if ( !packet->message_id ) {
+				free(tmp);
+				return 0;
+			}
+			memcpy(packet->message_id, tmp+i+1, len);
+			packet->message_id[len] = 0;
+			
+			/* Get rid of the old message. */
+			free(tmp);
+			break;
+		}
 
-                        break;
-                }
-        }
+		/* Check that we're not too long yet. */
+		len++;
+		if ( len > 6 )
+		{
+			break;
+		}
+		
+		i--;
+	} while (i >= 0);
+	
         
 	/* Catch telemetry messages. */
 	if ( strcmp(packet->src_callsign, packet->destination) == 0 &&
