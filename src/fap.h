@@ -135,6 +135,9 @@ typedef enum
 	fapEXP_UNSUPP,
 	fapSYM_INV_TABLE,
 	
+	fap3RDPARTY_UNSUPP,
+	fap3RDPARTY_ON_APRSIS,
+	
 	fapNOT_IMPLEMENTED,
 	fapNMEA_NOFIELDS,
 	
@@ -346,6 +349,9 @@ typedef struct
 	char** capabilities;
 	/// Amount of capabilities in list.
 	unsigned int capabilities_len;
+
+	/// If the packet was a 3rd party packet, the source callsign of the igate which retransmitted it
+	char *src_callsign_3rdparty;
 	
 } fap_packet_t;
 

@@ -130,6 +130,7 @@ regex_t fapint_regex_base91_telemetry;
 
 /* Regex needed in this file. */
 regex_t fapint_regex_detect_comp, fapint_regex_detect_wx, fapint_regex_detect_telem, fapint_regex_detect_exp;
+regex_t fapint_regex_detect_3rdparty;
 regex_t fapint_regex_kiss_hdrbdy, fapint_regex_hdr_detail;
 regex_t fapint_regex_hopcount1, fapint_regex_hopcount2;
 
@@ -454,7 +455,29 @@ fap_packet_t* fap_parseaprs(char const* input, size_t const input_len, short con
 	/* Check for third party packets. */
 	else if ( typechar == '}' )
 	{
-		/* Come here to avoid the "when all else fails" option. */
+		if ( regexec(&fapint_regex_detect_3rdparty, body, 0, NULL, 0) == 0 )
+		{
+			/* A 3rd party packet should only be seen on RF, but the
+			 * packet inside it may well originate from APRS-IS.
+			 * This also prevents us from recursing multiple times.
+			 */
+			if (is_ax25) {
+				fap_packet_t *res = fap_parseaprs(body+1, body_len-1, 0);
+				// Mark as 3rd party, get srccall from the outer header
+				res->src_callsign_3rdparty = result->src_callsign;
+				result->src_callsign = NULL;
+				fap_free(result);
+				return res;
+			} else {
+				result->error_code = malloc(sizeof(fap_error_code_t));
+				if ( result->error_code ) *result->error_code = fap3RDPARTY_UNSUPP;
+			}
+		}
+		else
+		{
+			result->error_code = malloc(sizeof(fap_error_code_t));
+			if ( result->error_code ) *result->error_code = fap3RDPARTY_UNSUPP;
+		}
 	}
 	/* When all else fails, try to look for a !-position that can occur
 	   anywhere within the 40 first characters according to the spec. */
@@ -1643,7 +1666,8 @@ void fap_init()
 		regcomp(&fapint_regex_detect_wx, "^_([0-9]{8})c[- .0-9]{1,3}s[- .0-9]{1,3}", REG_EXTENDED|REG_NOSUB);
 		regcomp(&fapint_regex_detect_telem, "^T#(.*?),(.*)$", REG_EXTENDED|REG_NOSUB);
 		regcomp(&fapint_regex_detect_exp, "^\\{\\{", REG_EXTENDED|REG_NOSUB);
-	
+		regcomp(&fapint_regex_detect_3rdparty, "}([A-Z0-9-]{1,9})>([A-Z0-9-]{1,9})(,[A-Z0-9-]{1,9}):.{1,}", REG_EXTENDED|REG_ICASE);
+
 		regcomp(&fapint_regex_kiss_hdrbdy, "^([A-Z0-9,*>-]+):(.+)$", REG_EXTENDED);
 		regcomp(&fapint_regex_hdr_detail, "^([A-Z0-9]{1,6})(-[0-9]{1,2})?>([A-Z0-9]{1,6})(-[0-9]{1,2})?(,.*)?$", REG_EXTENDED);
 		regcomp(&fapint_regex_kiss_digi, "^([A-Z0-9]{1,6})(-[0-9]{1,2})?(\\*)?$", REG_EXTENDED);
@@ -1653,7 +1677,6 @@ void fap_init()
 		regcomp(&fapint_regex_hopcount1, "^([A-Z0-9-]+)\\*$", REG_EXTENDED);
 		regcomp(&fapint_regex_hopcount2, "^WIDE([1-7])-([0-7])$", REG_EXTENDED);
 	
-		
 		/* Initialized. */
 		fapint_initialized = 1;
 	}
