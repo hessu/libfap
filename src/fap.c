@@ -467,7 +467,7 @@ fap_packet_t* fap_parseaprs(char const* input, size_t const input_len, short con
 				res->src_callsign_3rdparty = result->src_callsign;
 				result->src_callsign = NULL;
 				fap_free(result);
-				return res;
+				result = res;
 			} else {
 				result->error_code = malloc(sizeof(fap_error_code_t));
 				if ( result->error_code ) *result->error_code = fap3RDPARTY_UNSUPP;
@@ -755,6 +755,10 @@ void fap_explain_error(fap_error_code_t const error, char* output)
 		
 		case fapNO_APRS:
 			sprintf(output, "Not an APRS packet");
+			break;
+			
+		case fap3RDPARTY_UNSUPP:
+			sprintf(output, "3rd party packet parsing failed");
 			break;
 		
 		default:
@@ -1666,7 +1670,7 @@ void fap_init()
 		regcomp(&fapint_regex_detect_wx, "^_([0-9]{8})c[- .0-9]{1,3}s[- .0-9]{1,3}", REG_EXTENDED|REG_NOSUB);
 		regcomp(&fapint_regex_detect_telem, "^T#(.*?),(.*)$", REG_EXTENDED|REG_NOSUB);
 		regcomp(&fapint_regex_detect_exp, "^\\{\\{", REG_EXTENDED|REG_NOSUB);
-		regcomp(&fapint_regex_detect_3rdparty, "}([A-Z0-9-]{1,9})>([A-Z0-9-]{1,9})(,[A-Z0-9-]{1,9}):.{1,}", REG_EXTENDED|REG_ICASE);
+		regcomp(&fapint_regex_detect_3rdparty, "^}([A-Z0-9-]{1,9})>([A-Z0-9-]{1,9})(,[A-Z0-9*-]{1,10})*:[^}].+$", REG_EXTENDED|REG_ICASE);
 
 		regcomp(&fapint_regex_kiss_hdrbdy, "^([A-Z0-9,*>-]+):(.+)$", REG_EXTENDED);
 		regcomp(&fapint_regex_hdr_detail, "^([A-Z0-9]{1,6})(-[0-9]{1,2})?>([A-Z0-9]{1,6})(-[0-9]{1,2})?(,.*)?$", REG_EXTENDED);
