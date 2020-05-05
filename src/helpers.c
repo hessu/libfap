@@ -3801,64 +3801,9 @@ fap_packet_t* fapint_create_packet()
 {
 	fap_packet_t* result = malloc(sizeof(fap_packet_t));
 	if ( !result ) return NULL;
+	
+	memset(result, 0, sizeof(*result));
 
-	/* Prepare result object. */
-	result->error_code = NULL;
-	result->type = NULL;
-	
-	result->orig_packet = NULL;
-	result->orig_packet_len = 0;
-
-	result->header = NULL;
-	result->body = NULL;  
-	result->body_len = 0; 
-	result->src_callsign = NULL;
-	result->dst_callsign = NULL;
-	result->path = NULL; 
-	result->path_len = 0;
-	
-	result->latitude = NULL;    
-	result->longitude = NULL;
-	result->format = NULL;
-	result->pos_resolution = NULL;
-	result->pos_ambiguity = NULL;
-	result->dao_datum_byte = 0;
-	
-	result->altitude = NULL;
-	result->course = NULL;  
-	result->speed = NULL;   
-
-	result->symbol_table = 0;
-	result->symbol_code = 0; 
-	
-	result->messaging = NULL;
-	result->destination = NULL;
-	result->message = NULL;
-	result->message_ack = NULL;
-	result->message_nack = NULL;
-	result->message_id = NULL;
-	result->comment = NULL;
-	result->comment_len = 0;
-	
-	result->object_or_item_name = NULL;
-	result->alive = NULL;
-
-	result->gps_fix_status = NULL;
-	result->radio_range = NULL;
-	result->phg = NULL;
-	result->timestamp = NULL;
-	result->raw_timestamp = NULL;
-	result->nmea_checksum_ok = NULL;
-	
-	result->wx_report = NULL;
-	result->telemetry = NULL;
-
-	result->messagebits = NULL;
-	result->status = NULL;
-	result->status_len = 0;
-	result->capabilities = NULL;
-	result->capabilities_len = 0;
-	
 	/* Return results. */
 	return result;
 }
