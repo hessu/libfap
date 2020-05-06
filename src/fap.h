@@ -294,6 +294,8 @@ typedef struct
 	
 	/// Zero for no messaging capability, 1 for yes.
 	short* messaging;
+	/// Source callsign of message.
+	char* message_srccall;
 	/// Destination of message.
 	char* destination;
 	/// The actual message text.
@@ -351,8 +353,17 @@ typedef struct
 	unsigned int capabilities_len;
 
 	/// If the packet was a 3rd party packet, the source callsign of the igate which retransmitted it
-	char *src_callsign_3rdparty;
-	
+	char* thirdparty_outer_src_callsign;
+	/// Outer header of a 3rd party packet, as transmitted by the igate
+	char* thirdparty_outer_header;
+	/// Full body of a 3rd party packet, including the inner header (may contain NUL bytes)
+	char* thirdparty_body;
+	/// Length of body of a 3rd party packet
+	size_t thirdparty_body_len;
+
+	/// Combined inner and outer headers of a 3rd-party packet.
+	char* thirdparty_combined_header;
+
 } fap_packet_t;
 
 

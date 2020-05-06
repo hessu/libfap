@@ -464,8 +464,25 @@ fap_packet_t* fap_parseaprs(char const* input, size_t const input_len, short con
 			if (is_ax25) {
 				fap_packet_t *res = fap_parseaprs(body+1, body_len-1, 0);
 				// Mark as 3rd party, get srccall from the outer header
-				res->src_callsign_3rdparty = result->src_callsign;
+				res->thirdparty_outer_src_callsign = result->src_callsign;
 				result->src_callsign = NULL;
+				
+				// Generate a combined header with both inner and outer headers
+				if ((result->header) && (res->header)) {
+					size_t l = strlen(result->header) + 1 + strlen(res->header) + 1;
+					char *hdr = malloc(l);
+					if (hdr) {
+						snprintf(hdr, l, "%s:%s", result->header, res->header);
+					}
+					res->thirdparty_combined_header = hdr;
+				}
+				
+				res->thirdparty_outer_header = result->header;
+				result->header = NULL;
+				res->thirdparty_body = result->body;
+				res->thirdparty_body_len = result->body_len;
+				result->body = NULL;
+				
 				fap_free(result);
 				result = res;
 			} else {
@@ -1807,6 +1824,7 @@ void fap_free(fap_packet_t* packet)
 	if ( packet->speed ) { free(packet->speed); }
 
 	if ( packet->messaging ) { free(packet->messaging); }   
+	if ( packet->message_srccall ) { free(packet->message_srccall); }
 	if ( packet->destination ) { free(packet->destination); }
 	if ( packet->message ) { free(packet->message); }   
 	if ( packet->message_ack ) { free(packet->message_ack); }   
@@ -1869,6 +1887,11 @@ void fap_free(fap_packet_t* packet)
 		if ( packet->capabilities[i+1] ) { free(packet->capabilities[i+1]); }
 	}
 	if ( packet->capabilities ) { free(packet->capabilities); }
+	
+	if ( packet->thirdparty_outer_src_callsign ) { free(packet->thirdparty_outer_src_callsign); }
+	if ( packet->thirdparty_outer_header ) { free(packet->thirdparty_outer_header); }
+	if ( packet->thirdparty_combined_header ) { free(packet->thirdparty_combined_header); }
+	if ( packet->thirdparty_body ) { free(packet->thirdparty_body); }
 	
 	free(packet);
 }
