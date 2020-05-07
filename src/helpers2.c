@@ -61,18 +61,18 @@ void fapint_clear_llist(fapint_llist_item_t* list)
 
 
 
-double fapint_get_pos_resolution(size_t const minute_digit_count)
+double fapint_get_pos_resolution(int const minute_digit_count)
 {
 	double retval = KNOT_TO_KMH;
 	if ( minute_digit_count  <= -2 )
 	{
-		retval *= 600;
+        retval *= 600.0;
 	}
 	else
 	{
-		retval *= 1000;
+        retval *= 1000.0;
 	}
-	return retval * pow(10, -1*minute_digit_count);
+    return retval * pow(10, -1*minute_digit_count);
 }
 
 
@@ -476,7 +476,7 @@ int fapint_get_nmea_latlon(fap_packet_t* packet, char* field1, char* field2)
 		{
 			packet->pos_resolution = malloc(sizeof(double));
 			if ( !packet->pos_resolution ) return 0;
-			*packet->pos_resolution = fapint_get_pos_resolution(len);
+			*packet->pos_resolution = fapint_get_pos_resolution((int)len);
 		}
 	}
 	else
